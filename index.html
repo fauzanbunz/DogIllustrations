@@ -1,261 +1,302 @@
-import React, { useState, useEffect } from 'react';
-import { Mail, Instagram, Dribbble, Twitter, ArrowRight } from 'lucide-react';
-
-// --- DATA: GITHUB REPOSITORY IMAGES ---
-// Replace the filenames (1.jpg, 2.jpg, etc.) if they differ in your actual repository.
-const DOG_ILLUSTRATIONS = [
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/IACP%20FRONT.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/TRASHED%20new%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/arizona%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/back.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/beehaved%20new.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/dantes.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/drive%20copy%20Xxxxx.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/fur%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/harley%20quinn.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hellhound1.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hermione%20fix%20copy%202.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hunter.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hydra.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/j.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/jpk9%20atlanta%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/juglife2%202.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/klutch%20k9%20blk.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/mad%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/muzzlefx.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/ocsabblck.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/police%20X.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/poster%20nov%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/rocky%20head%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/santa%20copy%202.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/silver%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/southbay%20bw%20copy.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/southbayBW.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/turtles%20new.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/vesoto.jpg",
-  "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/zelda%20copy%202.jpg"
-];
-
-// Fallback images just in case the GitHub URLs are not found / still uploading
-const FALLBACK_IMAGES = [
-  "https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1537151608804-ea6f11cc951c?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=800&auto=format&fit=crop"
-];
-
-export default function PortfolioApp() {
-  const [scrollY, setScrollY] = useState(0);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [currentBgIndex, setCurrentBgIndex] = useState(0);
-
-  // Parallax Effect & Navbar Scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Background Slideshow Interval
-  useEffect(() => {
-    const slideInterval = setInterval(() => {
-      setCurrentBgIndex((prevIndex) => (prevIndex + 1) % DOG_ILLUSTRATIONS.length);
-    }, 5000); // Gambar berganti setiap 5 detik
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Fisher - Illustrator Portfolio</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    /* CSS Kustom untuk efek Slider (Marquee) */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      animation: marquee 150s linear infinite;
+      width: max-content;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
     
-    return () => clearInterval(slideInterval);
-  }, []);
+    /* Utility class tambahan */
+    .backdrop-blur-md {
+      backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-50 font-sans selection:bg-white selection:text-zinc-900 overflow-x-hidden">
 
-  // We duplicate the array to create a seamless infinite loop
-  const marqueeImages = [...DOG_ILLUSTRATIONS, ...DOG_ILLUSTRATIONS];
-
-  return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 font-sans selection:bg-white selection:text-zinc-900 overflow-x-hidden">
-      
-      {/* INJECT CUSTOM CSS FOR INFINITE MARQUEE */}
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: marquee 150s linear infinite;
-          width: max-content;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
-
-      {/* NAVBAR */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-zinc-950/90 backdrop-blur-md py-4 border-b border-zinc-800' : 'bg-transparent py-6'}`}>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-          <a href="#" className="text-xl font-black tracking-tighter uppercase">
-            A<span className="text-zinc-500">.</span>Fisher<span className="text-zinc-500">.</span>
-          </a>
-          <div className="hidden md:flex gap-8 text-sm font-medium tracking-wide">
-            <a href="#work" className="hover:text-zinc-400 transition-colors">Work</a>
-            <a href="#about" className="hover:text-zinc-400 transition-colors">About</a>
-            <a href="#contact" className="hover:text-zinc-400 transition-colors">Contact</a>
-          </div>
-          <button className="md:hidden text-zinc-50">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
-        </div>
-      </nav>
-
-      {/* HERO SECTION WITH PARALLAX */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {DOG_ILLUSTRATIONS.map((src, index) => (
-          <div 
-            key={index}
-            className={`absolute inset-0 bg-cover bg-center bg-fixed bg-no-repeat z-0 transition-opacity duration-[3000ms] ease-in-out ${
-              index === currentBgIndex ? 'opacity-70' : 'opacity-0'
-            }`}
-            style={{ 
-              backgroundImage: `url('${src}')`,
-            }}
-          />
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/70 to-zinc-950 z-0"></div>
-        
-        <div 
-          className="relative z-10 text-center px-6 max-w-5xl mx-auto"
-          style={{ transform: `translateY(${scrollY * 0.4}px)` }}
-        >
-          <h1 className="text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter mb-6 leading-none">
-            BRINGING <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 to-zinc-600">IMAGINATION TO LIFE.</span>
-          </h1>
-          <p className="text-lg md:text-2xl text-zinc-400 max-w-2xl mx-auto font-light">
-            Illustrator & Visual Designer focusing on storytelling through digital strokes and concept art.
-          </p>
-          <a href="#work" className="inline-flex items-center gap-2 mt-12 pb-2 border-b border-white hover:border-zinc-500 hover:text-zinc-400 transition-all text-sm font-semibold tracking-widest uppercase">
-            View Portfolio <ArrowRight size={16} />
-          </a>
-        </div>
-      </section>
-
-      {/* AUTO-SCROLLING MARQUEE GALLERY SECTION */}
-      <section id="work" className="py-32 relative bg-zinc-950 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 mb-16">
-          <h2 className="text-xs tracking-[0.3em] text-zinc-500 uppercase font-bold mb-4">Selected Works</h2>
-          <h3 className="text-4xl md:text-5xl font-bold tracking-tight">Dog Illustrations <br/>Gallery</h3>
-        </div>
-
-        {/* Marquee Container */}
-        <div className="w-full relative py-8">
-          <div className="flex animate-marquee gap-8 px-4 cursor-grab active:cursor-grabbing">
-            {marqueeImages.map((src, index) => (
-              <div 
-                key={index} 
-                className="w-[300px] md:w-[450px] aspect-[4/5] flex-shrink-0 rounded-2xl overflow-hidden group relative"
-              >
-                <img 
-                  src={src} 
-                  alt={`Dog Illustration ${index + 1}`} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  onError={(e) => {
-                    // Fallback to Unsplash images if GitHub images aren't found yet
-                    e.target.src = FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
-                  }}
-                />
-                {/* Overlay on Hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-8">
-                  <span className="text-white font-semibold tracking-widest uppercase text-sm">
-                    View Project
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ABOUT SECTION */}
-      <section id="about" className="py-32 relative border-t border-zinc-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="order-2 md:order-1">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-8">
-                Crafting visuals that tell a story.
-              </h2>
-              <p className="text-zinc-400 text-lg leading-relaxed mb-6">
-                I am an independent visual artist and illustrator. My primary focus is creating immersive artwork for publishing, the gaming industry, and brands that dare to be different.
-              </p>
-              <p className="text-zinc-400 text-lg leading-relaxed mb-12">
-                With over 8 years of experience, I combine traditional illustration techniques with modern digital tools to produce a distinctive and characterful visual style.
-              </p>
-              
-              <div className="grid grid-cols-2 gap-8 border-t border-zinc-900 pt-8">
-                <div>
-                  <h4 className="text-3xl font-bold mb-2">8+</h4>
-                  <span className="text-zinc-500 text-sm uppercase tracking-wider">Years of Experience</span>
-                </div>
-                <div>
-                  <h4 className="text-3xl font-bold mb-2">150+</h4>
-                  <span className="text-zinc-500 text-sm uppercase tracking-wider">Completed Projects</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="order-1 md:order-2 relative">
-              <div className="aspect-[3/4] w-full max-w-md mx-auto relative rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-                <img 
-                  src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2488&auto=format&fit=crop" 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CALL TO ACTION / CONTACT */}
-      <section id="contact" className="py-32 bg-zinc-900 relative overflow-hidden text-center">
-        {/* Parallax Background Text */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vw] font-black text-zinc-950/50 whitespace-nowrap pointer-events-none select-none z-0"
-          style={{ transform: `translate(-50%, calc(-50% + ${scrollY * 0.1}px))` }}
-        >
-          LET'S COLLABORATE
-        </div>
-        
-        <div className="relative z-10 max-w-4xl mx-auto px-6">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8">Have an interesting project in mind?</h2>
-          <p className="text-xl text-zinc-400 mb-12">
-            I am always open to creative commissions, collaborations, or just a chat about art.
-          </p>
-          <a href="mailto:hello@example.com" className="inline-block bg-white text-zinc-950 px-10 py-5 rounded-full font-bold uppercase tracking-widest hover:bg-zinc-200 transition-colors hover:scale-105 active:scale-95 duration-200">
-            Contact Me
-          </a>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="py-12 border-t border-zinc-900 text-center md:text-left">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-zinc-500 text-sm">
-            © {new Date().getFullYear()} Alex Fisher Design. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <a href="#" className="text-zinc-500 hover:text-white transition-colors"><Instagram size={20} /></a>
-            <a href="#" className="text-zinc-500 hover:text-white transition-colors"><Dribbble size={20} /></a>
-            <a href="#" className="text-zinc-500 hover:text-white transition-colors"><Twitter size={20} /></a>
-            <a href="#" className="text-zinc-500 hover:text-white transition-colors"><Mail size={20} /></a>
-          </div>
-        </div>
-      </footer>
-
+  <!-- NAVBAR -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-6">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+      <a href="#" class="text-xl font-black tracking-tighter uppercase">
+        A<span class="text-zinc-500">.</span>Fisher<span class="text-zinc-500">.</span>
+      </a>
+      <div class="hidden md:flex gap-8 text-sm font-medium tracking-wide">
+        <a href="#work" class="hover:text-zinc-400 transition-colors">Work</a>
+        <a href="#about" class="hover:text-zinc-400 transition-colors">About</a>
+        <a href="#contact" class="hover:text-zinc-400 transition-colors">Contact</a>
+      </div>
+      <button class="md:hidden text-zinc-50">
+        <!-- SVG Hamburger Icon -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
     </div>
-  );
-}
+  </nav>
+
+  <!-- HERO SECTION DENGAN PARALLAX & SLIDESHOW BACKGROUND -->
+  <section class="relative h-screen flex items-center justify-center overflow-hidden">
+    <!-- Kontainer untuk Background Slideshow -->
+    <div id="hero-bg-container" class="absolute inset-0 z-0"></div>
+    
+    <!-- Gradient Overlay agar teks tetap terbaca -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/70 to-zinc-950 z-0"></div>
+    
+    <div id="hero-text" class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+      <h1 class="text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter mb-6 leading-none">
+        BRINGING <br/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 to-zinc-600">IMAGINATION TO LIFE.</span>
+      </h1>
+      <p class="text-lg md:text-2xl text-zinc-400 max-w-2xl mx-auto font-light">
+        Illustrator & Visual Designer focusing on storytelling through digital strokes and concept art.
+      </p>
+      <a href="#work" class="inline-flex items-center gap-2 mt-12 pb-2 border-b border-white hover:border-zinc-500 hover:text-zinc-400 transition-all text-sm font-semibold tracking-widest uppercase">
+        View Portfolio 
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- AUTO-SCROLLING MARQUEE GALLERY SECTION -->
+  <section id="work" class="py-32 relative bg-zinc-950 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 mb-16">
+      <h2 class="text-xs tracking-[0.3em] text-zinc-500 uppercase font-bold mb-4">Selected Works</h2>
+      <h3 class="text-4xl md:text-5xl font-bold tracking-tight">Dog Illustrations <br/>Gallery</h3>
+    </div>
+
+    <!-- Marquee Container -->
+    <div class="w-full relative py-8">
+      <div id="marquee-container" class="flex animate-marquee gap-8 px-4 cursor-grab active:cursor-grabbing">
+        <!-- Gambar akan dimasukkan lewat JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="py-32 relative border-t border-zinc-900">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div class="order-2 md:order-1">
+          <h2 class="text-4xl md:text-6xl font-black tracking-tight mb-8">
+            Crafting visuals that tell a story.
+          </h2>
+          <p class="text-zinc-400 text-lg leading-relaxed mb-6">
+            I am an independent visual artist and illustrator. My primary focus is creating immersive artwork for publishing, the gaming industry, and brands that dare to be different.
+          </p>
+          <p class="text-zinc-400 text-lg leading-relaxed mb-12">
+            With over 8 years of experience, I combine traditional illustration techniques with modern digital tools to produce a distinctive and characterful visual style.
+          </p>
+          
+          <div class="grid grid-cols-2 gap-8 border-t border-zinc-900 pt-8">
+            <div>
+              <h4 class="text-3xl font-bold mb-2">8+</h4>
+              <span class="text-zinc-500 text-sm uppercase tracking-wider">Years of Experience</span>
+            </div>
+            <div>
+              <h4 class="text-3xl font-bold mb-2">150+</h4>
+              <span class="text-zinc-500 text-sm uppercase tracking-wider">Completed Projects</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="order-1 md:order-2 relative">
+          <div class="aspect-[3/4] w-full max-w-md mx-auto relative rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+            <img 
+              src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2488&auto=format&fit=crop" 
+              alt="Profile" 
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALL TO ACTION / CONTACT -->
+  <section id="contact" class="py-32 bg-zinc-900 relative overflow-hidden text-center">
+    <!-- Parallax Background Text -->
+    <div 
+      id="contact-text"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vw] font-black text-zinc-950/50 whitespace-nowrap pointer-events-none select-none z-0"
+    >
+      LET'S COLLABORATE
+    </div>
+    
+    <div class="relative z-10 max-w-4xl mx-auto px-6">
+      <h2 class="text-4xl md:text-6xl font-bold mb-8">Have an interesting project in mind?</h2>
+      <p class="text-xl text-zinc-400 mb-12">
+        I am always open to creative commissions, collaborations, or just a chat about art.
+      </p>
+      <a href="mailto:hello@example.com" class="inline-block bg-white text-zinc-950 px-10 py-5 rounded-full font-bold uppercase tracking-widest hover:bg-zinc-200 transition-colors hover:scale-105 active:scale-95 duration-200">
+        Contact Me
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 border-t border-zinc-900 text-center md:text-left">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+      <p class="text-zinc-500 text-sm">
+        © <span id="current-year"></span> Alex Fisher Design. All rights reserved.
+      </p>
+      <div class="flex gap-6">
+        <!-- Instagram -->
+        <a href="#" class="text-zinc-500 hover:text-white transition-colors">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </a>
+        <!-- Dribbble -->
+        <a href="#" class="text-zinc-500 hover:text-white transition-colors">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"></path></svg>
+        </a>
+        <!-- Twitter -->
+        <a href="#" class="text-zinc-500 hover:text-white transition-colors">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+        </a>
+        <!-- Mail -->
+        <a href="#" class="text-zinc-500 hover:text-white transition-colors">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIKA HALAMAN -->
+  <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Data Gambar GitHub Anda
+    const DOG_ILLUSTRATIONS = [
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/IACP%20FRONT.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/TRASHED%20new%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/arizona%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/back.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/beehaved%20new.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/dantes.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/drive%20copy%20Xxxxx.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/fur%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/harley%20quinn.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hellhound1.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hermione%20fix%20copy%202.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hunter.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/hydra.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/j.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/jpk9%20atlanta%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/juglife2%202.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/klutch%20k9%20blk.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/mad%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/muzzlefx.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/ocsabblck.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/police%20X.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/poster%20nov%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/rocky%20head%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/santa%20copy%202.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/silver%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/southbay%20bw%20copy.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/southbayBW.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/turtles%20new.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/vesoto.jpg",
+      "https://raw.githubusercontent.com/fauzanbunz/DogIllustrations/main/zelda%20copy%202.jpg"
+    ];
+
+    const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80&w=800&auto=format&fit=crop";
+
+    // 1. SETUP HERO BACKGROUND SLIDESHOW
+    const bgContainer = document.getElementById('hero-bg-container');
+    
+    // Buat elemen gambar untuk background
+    DOG_ILLUSTRATIONS.forEach((src, index) => {
+      const div = document.createElement('div');
+      // Set gambar pertama ke opacity-70 (terlihat), sisanya opacity-0 (tersembunyi)
+      const opacityClass = index === 0 ? 'opacity-70' : 'opacity-0';
+      div.className = `absolute inset-0 bg-cover bg-center bg-fixed bg-no-repeat z-0 transition-opacity duration-[3000ms] ease-in-out ${opacityClass}`;
+      div.style.backgroundImage = `url('${src}')`;
+      bgContainer.appendChild(div);
+    });
+
+    // Jalankan interval background
+    let currentBgIndex = 0;
+    setInterval(() => {
+      const divs = bgContainer.children;
+      if(divs.length === 0) return;
+      
+      // Sembunyikan gambar saat ini
+      divs[currentBgIndex].classList.remove('opacity-70');
+      divs[currentBgIndex].classList.add('opacity-0');
+      
+      // Pindah ke index berikutnya
+      currentBgIndex = (currentBgIndex + 1) % DOG_ILLUSTRATIONS.length;
+      
+      // Tampilkan gambar berikutnya
+      divs[currentBgIndex].classList.remove('opacity-0');
+      divs[currentBgIndex].classList.add('opacity-70');
+    }, 5000);
+
+    // 2. SETUP MARQUEE SLIDER
+    const marqueeContainer = document.getElementById('marquee-container');
+    const marqueeImages = [...DOG_ILLUSTRATIONS, ...DOG_ILLUSTRATIONS]; // Duplikat untuk loop tanpa batas
+    
+    marqueeImages.forEach((src) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = "w-[300px] md:w-[450px] aspect-[4/5] flex-shrink-0 rounded-2xl overflow-hidden group relative";
+      
+      itemDiv.innerHTML = `
+        <img 
+          src="${src}" 
+          alt="Dog Illustration" 
+          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          onerror="this.src='${FALLBACK_IMAGE}'"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-8">
+          <span class="text-white font-semibold tracking-widest uppercase text-sm">
+            View Project
+          </span>
+        </div>
+      `;
+      marqueeContainer.appendChild(itemDiv);
+    });
+
+    // 3. SETUP PARALLAX SCROLL EFFECT
+    const navbar = document.getElementById('navbar');
+    const heroText = document.getElementById('hero-text');
+    const contactText = document.getElementById('contact-text');
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+
+      // Navbar Style Change
+      if (scrollY > 50) {
+        navbar.classList.add('bg-zinc-950/90', 'backdrop-blur-md', 'border-b', 'border-zinc-800', 'py-4');
+        navbar.classList.remove('bg-transparent', 'py-6');
+      } else {
+        navbar.classList.remove('bg-zinc-950/90', 'backdrop-blur-md', 'border-b', 'border-zinc-800', 'py-4');
+        navbar.classList.add('bg-transparent', 'py-6');
+      }
+
+      // Parallax Teks Hero
+      if (heroText) {
+        heroText.style.transform = `translateY(${scrollY * 0.4}px)`;
+      }
+
+      // Parallax Teks Contact
+      if (contactText) {
+        contactText.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.1}px))`;
+      }
+    });
+
+  </script>
+</body>
+</html>
